@@ -1,27 +1,36 @@
 package mvc;
 
-/*
-Edits:
-    Fadrigon 3/13/25: created file
-    Fadrigon 3/16/25: added model pointer, created View constructor that subscribes View to model, created View update() method, added comment line 17
-    Fadrigon 3/17/25: added setModel() method to unassign old model and reassign new one, model pointer changed from private to protected
- */
-
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
-public class View extends JPanel implements Subscriber{
+public class View extends JPanel implements Subscriber {
+
     protected Model model;
-    public View(Model model){
+    // static public Dimension dim;
+
+    public View(Model model) {
+        super();
         this.model = model;
-        this.model.subscribe(this);
-    }
-    public void update() {
-        repaint();
+        model.subscribe(this);
+        // optional border around the view component
+        setBorder(LineBorder.createGrayLineBorder());//.createBlackLineBorder());
     }
 
-    public void setModel(Model newModel){
-        this.model.unsubscribe(this);
+    public Model getModel() { return model; }
+
+    // called by File/Open and File/New
+    public void setModel(Model newModel) {
+        if (model != null) model.unsubscribe(this);
         this.model = newModel;
-        this.model.subscribe(this);
+        if (newModel != null) {
+            model.subscribe(this);
+            update();
+        }
     }
+    @Override
+    public void update() {
+        this.repaint();
+    }
+
+
 }

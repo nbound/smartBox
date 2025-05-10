@@ -1,18 +1,11 @@
 package mvc;
 
-/*
-Edits:
-    Fadrigon 3/13/25:   created file, imported code from assignment webpage
-    Fadrigon 3/17/25:   added ControlPanel nested class.
-                        added initialization for factory, model, view.
-                        added Subscriber functionality.
-                        added Command functionality.
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 // AppPanel is the MVC controller
 public class AppPanel extends JPanel implements Subscriber, ActionListener  {
@@ -21,21 +14,21 @@ public class AppPanel extends JPanel implements Subscriber, ActionListener  {
     protected AppFactory factory;
     protected View view;
     protected JPanel controlPanel;
-    private JFrame frame;
-    public static int FRAME_WIDTH = 500;
-    public static int FRAME_HEIGHT = 300;
-
+    protected JFrame frame;
+    public static int FRAME_WIDTH = 900;
+    public static int FRAME_HEIGHT = 600;
+    List<String> history = new ArrayList<String>();
     public AppPanel(AppFactory factory) {
-
-        // initialize fields here
         this.factory = factory;
-        this.model = this.factory.makeModel();
-        this.view = this.factory.makeView(this.model);
-        this.model.subscribe(this);
+        model = factory.makeModel();
+        view = factory.makeView(model);
+        view.setBackground((Color.GRAY));
         controlPanel = new JPanel();
-        this.setLayout((new GridLayout(1, 2)));
-        this.add(controlPanel);
-        this.add(view);
+        controlPanel.setBackground((Color.PINK));
+        setLayout(new GridLayout(1, 2));
+        add(controlPanel);
+        add(view);
+        model.subscribe(this);
 
         frame = new SafeFrame();
         Container cp = frame.getContentPane();
@@ -51,14 +44,22 @@ public class AppPanel extends JPanel implements Subscriber, ActionListener  {
 
     public Model getModel() { return model; }
 
+    // testing this out as a utility
+    private void add(JComponent control, JPanel controlPanel) {
+        JPanel p = new JPanel();
+        p.setOpaque(false);
+        p.add(control);
+        controlPanel.add(p);
+    }
+
     // called by file/open and file/new
     public void setModel(Model newModel) {
         this.model.unsubscribe(this);
         this.model = newModel;
         this.model.subscribe(this);
-        // view must also unsubscribe then resubscribe:
-        view.setModel(this.model);
+        view.setModel(this.model); // view unsubscribes to old model and subscribes to the new one
         model.changed();
+        //alternatively: this.model.copy(model);
     }
 
     protected JMenuBar createMenuBar() {
@@ -73,11 +74,12 @@ public class AppPanel extends JPanel implements Subscriber, ActionListener  {
         result.add(editMenu);
 
         JMenu helpMenu =
-                Utilities.makeMenu("Help", new String[] {"About", "Help"}, this);
+                Utilities.makeMenu("Help", new String[] {"About", "Help","History"}, this);
         result.add(helpMenu);
 
         return result;
     }
+
 
     public void actionPerformed(ActionEvent ae) {
         try {
@@ -102,10 +104,14 @@ public class AppPanel extends JPanel implements Subscriber, ActionListener  {
                 Utilities.inform(factory.about());
             } else if (cmmd.equals("Help")) {
                 Utilities.inform(factory.getHelp());
-            } else {
-                Command c = this.factory.makeEditCommand(model, cmmd, ae.getSource());
-                c.execute();
+            } else if (cmmd.equals("History")) {
+                Utilities.inform(history.toArray(new String[history.size()]));
             }
+            else { // must be from Edit menu
+                Command command = factory.makeEditCommand(model, cmmd, ae.getSource());
+                command.execute();
+            }
+            history.add(cmmd);
         } catch (Exception e) {
             handleException(e);
         }

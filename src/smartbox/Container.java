@@ -20,20 +20,23 @@ public class Container extends Model {
     public void addComponent(String name) throws Exception {
         String qualName = "smartbox.components." +  name;
         // Object obj = a new instance of qualName
+        Object obj = Class.forName(qualName).newInstance();
         addComponent((Component)obj);
     }
 
 
     private void addComponent(Component component) throws Exception {
         component.setContainer(this);
-        // add new guy to the componebnts table:
+        // add new guy to the components table:
         components.put(component.name, component);
         // update provided interfaces table:
         for(Class<?> intf: component.getProvidedInterfaces()) {
             providedInterfaces.put(intf,  component);
         }
         // update required interfaces table:
-        //???
+        for(Class<?> intf: component.getRequiredInterfaces()) {
+            requiredInterfaces.put(intf,  component);
+        }
         //find providers for the new component and hook him up:
         findProviders();
         // mvc stuff:

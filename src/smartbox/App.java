@@ -1,4 +1,5 @@
 package smartbox;
 
-public class App {
+public interface App {
+    public void main() throws Exception;
 }

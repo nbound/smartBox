@@ -1,10 +1,5 @@
 package mvc;
 
-/*
-Edits:
-    Fadrigon 3/13/25: created file, imported code from assignment webpage
- */
-
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.*;

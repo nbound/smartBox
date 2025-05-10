@@ -1,29 +1,41 @@
 package mvc;
 
-/*
-Edits:
-    Fadrigon 3/13/25: created file, imported code from previous project
- */
 
-import java.util.HashSet;
+import java.util.*;
+
 
 public class Publisher {
-    private HashSet<Subscriber> subscribers;
+    protected List<Subscriber> subscribers ;
+    //default implementation is ArrayList
     public Publisher(){
-        subscribers = new HashSet<Subscriber>();
+        subscribers = new ArrayList<>();
     }
 
-    public void subscribe(Subscriber s){
-        subscribers.add(s);
+    //can choose what type of list of subscribers
+    public Publisher(String x){
+        if(x.equalsIgnoreCase("linked")) {
+            subscribers = new LinkedList<>();
+        } else if(x.equalsIgnoreCase("stack"))
+            subscribers = new Stack<>();
+        else if(x.equalsIgnoreCase("vector"))
+            subscribers = new Vector<>();
+        else
+            subscribers = new ArrayList<>();
     }
-
-    public void unsubscribe(Subscriber s){
-        subscribers.remove(s);
+    public void subscribe(Subscriber sb){
+        subscribers.add(sb);
     }
-
+    public void unsubscribe(Subscriber sb){
+        subscribers.remove(sb);
+    }
+    //calls update method of all subscribers
     public void notifySubscribers(){
-        for(Subscriber s:subscribers){
-            s.update();
+        for(Subscriber sb: subscribers){
+            sb.update();
         }
+    }
+
+    public List<Subscriber> getSubscribers() {
+        return subscribers;
     }
 }
