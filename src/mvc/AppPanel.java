@@ -24,7 +24,7 @@ public class AppPanel extends JPanel implements Subscriber, ActionListener  {
         view = factory.makeView(model);
         view.setBackground((Color.GRAY));
         controlPanel = new JPanel();
-        controlPanel.setBackground((Color.PINK));
+        controlPanel.setBackground((Color.WHITE));
         setLayout(new GridLayout(1, 2));
         add(controlPanel);
         add(view);

@@ -35,6 +35,11 @@ public class ContainerFactory implements AppFactory {
 
     @Override
     public Command makeEditCommand(Model model, String type, Object source) {
-        return null;
+        return switch (type){
+            case "Add" -> new AddCommand(model);
+            case "Rem" -> new RemCommand(model);
+            case "Run" -> new RunCommand(model);
+            default -> null;
+        };
     }
 }

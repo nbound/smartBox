@@ -75,6 +75,9 @@ public class Container extends Model {
     public void launch(String name) throws Exception {
         try {
             // look up component and call main if it's an App
+            Component component = components.get(name);
+            App app = (App)component; //throws exception if component is not an App
+            app.main();
         } catch(Exception e) {
             mvc.Utilities.error(e);
             e.printStackTrace();

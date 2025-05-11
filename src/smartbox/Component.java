@@ -24,8 +24,6 @@ public class Component implements Serializable {
 
     // add needed getters & setters
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
     public Container getContainer() { return container; }
     public void setContainer(Container container) { this.container = container; }
     public Map<Class<?>, Field> getFields() { return fields; }
