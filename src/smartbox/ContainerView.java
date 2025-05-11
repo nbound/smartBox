@@ -23,12 +23,9 @@ public class ContainerView extends View {
         super.paintComponent(g);
         Container container = (Container)model;
         components.removeAll(); //reset list
-        //JTextArea componentList = new JTextArea(components.getItemCount(),1);
-        for(Component i : container.getComponents()){
+        for(Component i : container.getComponents()){   //re-add components
             String componentName = i.toString();
             components.add(componentName);
-            //componentList.append(componentName);
         }
-        //this.add(componentList);
     }
 }
